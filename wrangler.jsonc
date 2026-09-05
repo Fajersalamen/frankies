@@ -1,0 +1,18 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "frankies",
+  "compatibility_date": "2025-03-25",
+  // Cloudflare's git-connected deploy only runs `wrangler deploy` — it
+  // never runs the actual Next.js build on its own, so `out/` wouldn't
+  // exist yet. This tells wrangler to build first, regardless of what's
+  // configured (or not) in the dashboard's own Build settings.
+  "build": {
+    "command": "npm run build"
+  },
+  // The site is a static export (no server, no API routes, no database) —
+  // Workers serves it directly from the built `out/` directory.
+  "assets": {
+    "directory": "./out",
+    "binding": "ASSETS"
+  }
+}
