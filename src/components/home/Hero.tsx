@@ -1,12 +1,8 @@
 'use client';
 
-import { useRef } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { LOADER_TOTAL_S } from '@/lib/timing';
 import { easeLuxe, staggerChildren, wordReveal } from '@/lib/motion';
-import { usePrefersReducedMotion } from '@/lib/usePrefersReducedMotion';
-import { CAKE_BOX_HEIGHT_PERCENT, CAKE_BOX_TOP_PERCENT, CONTENT_FADE_START, STAGE_ASPECT } from '@/lib/heroCake';
-import { HeroCake } from './HeroCake';
 import { FloatingIcon } from '../ui/FloatingIcon';
 import { Button } from '../ui/Button';
 import { FlowerMark, PistachioMark, StrawberryMark } from '../ui/ingredient-icons';
@@ -18,155 +14,94 @@ function scrollToId(id: string) {
 }
 
 export function Hero() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const reduceMotion = usePrefersReducedMotion();
-
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ['start start', 'end end'],
-  });
-
-  // The scroll "story": the cake is fully assembled and static the
-  // instant the page loads — nothing moves until the visitor scrolls.
-  // Scrolling then explodes it apart layer by layer (per-layer motion
-  // lives in <HeroCake>), holds it apart, and reassembles it before the
-  // section fades into the next one. The headline drifts at a different
-  // rate (parallax) throughout.
-  const textY = useTransform(scrollYProgress, [0, 1], [0, -20]);
-  const contentOpacity = useTransform(scrollYProgress, [0, CONTENT_FADE_START, 1], [1, 1, 0]);
-  const bgColor = useTransform(scrollYProgress, [0, 1], ['#FBF4EA', '#E9D6B4']);
-  const scrollHintOpacity = useTransform(scrollYProgress, [0, 0.15], [1, 0]);
-
   return (
-    <section
-      id="home"
-      ref={containerRef}
-      className="relative"
-      style={{ height: reduceMotion ? '100svh' : '220vh' }}
-    >
-      <motion.div
-        style={{ backgroundColor: reduceMotion ? '#FBF4EA' : bgColor }}
-        className="sticky top-0 flex h-[100svh] items-start overflow-hidden pt-[var(--fc-header-h)] lg:items-center"
-      >
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_78%_30%,#f1e6d3_0%,transparent_55%),radial-gradient(circle_at_10%_85%,#efe0cc_0%,transparent_50%)]" />
-        <div className="fc-grain pointer-events-none absolute inset-0" />
+    <section id="home" className="relative overflow-hidden bg-fc-cream pt-[var(--fc-header-h)]">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_78%_30%,#f1e6d3_0%,transparent_55%),radial-gradient(circle_at_10%_85%,#efe0cc_0%,transparent_50%)]" />
+      <div className="fc-grain pointer-events-none absolute inset-0" />
 
-        <motion.div
-          style={{ opacity: reduceMotion ? 1 : contentOpacity }}
-          className="relative mx-auto grid w-full max-w-7xl grid-cols-1 items-center gap-4 px-5 py-2 sm:px-8 lg:grid-cols-[1.05fr_0.95fr] lg:gap-8 lg:py-0"
-        >
-          <motion.div style={{ y: reduceMotion ? 0 : textY }} className="order-2 lg:order-1">
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, ease: easeLuxe, delay: LOADER_TOTAL_S }}
-              className="flex items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.32em] text-fc-gold"
-            >
-              <span className="h-px w-8 bg-current" />
-              Amman&apos;s Handcrafted Cake Studio
-            </motion.div>
-
-            <h1 className="mt-4 font-fc-serif text-[clamp(2.8rem,7.5vw,5.6rem)] font-medium leading-[0.98] tracking-tight text-fc-cocoa lg:mt-6">
-              <motion.span
-                initial="hidden"
-                animate="show"
-                variants={staggerChildren(0.12, LOADER_TOTAL_S + 0.15)}
-                className="block"
-              >
-                {HEADLINE.split(' ').map((word, i) => (
-                  <span key={word} className="mr-4 inline-block overflow-hidden pb-2 align-bottom last:mr-0">
-                    <motion.span
-                      variants={wordReveal}
-                      className={`inline-block ${i === 1 ? 'italic text-fc-gold' : ''}`}
-                    >
-                      {word}
-                    </motion.span>
-                  </span>
-                ))}
-              </motion.span>
-            </h1>
-
-            <motion.p
-              initial={{ opacity: 0, y: 18 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, ease: easeLuxe, delay: LOADER_TOTAL_S + 0.55 }}
-              className="mt-4 max-w-md text-[15px] leading-relaxed text-fc-cocoa-light lg:mt-7"
-            >
-              Beautiful cakes, made with love for your sweetest moments — handcrafted in small batches
-              in AlJubiha, Amman.
-            </motion.p>
-
-            <motion.div
-              initial={{ opacity: 0, y: 18 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, ease: easeLuxe, delay: LOADER_TOTAL_S + 0.75 }}
-              className="mt-6 flex flex-wrap items-center gap-4 lg:mt-10"
-            >
-              <Button size="lg" onClick={() => scrollToId('cakes')}>
-                Explore Cakes
-              </Button>
-              <Button size="lg" variant="outline" onClick={() => scrollToId('custom')}>
-                Order Now
-              </Button>
-            </motion.div>
+      <div className="relative mx-auto grid w-full max-w-7xl grid-cols-1 items-center gap-10 px-5 py-12 sm:px-8 lg:grid-cols-[1.05fr_0.95fr] lg:gap-8 lg:py-24">
+        <div className="order-2 lg:order-1">
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, ease: easeLuxe, delay: LOADER_TOTAL_S }}
+            className="flex items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.32em] text-fc-gold"
+          >
+            <span className="h-px w-8 bg-current" />
+            Amman&apos;s Handcrafted Cake Studio
           </motion.div>
 
-          <div className="order-1 flex justify-center lg:order-2 lg:justify-end">
-            {/* The "stage" reserves exactly enough room above/below the
-                assembled cake to contain the layers at full explosion
-                (see STAGE_ASPECT), and clips anything beyond that — so
-                the exploded cake can never overlap the headline below
-                it, however the explosion is tuned. */}
-            <div
-              className="relative overflow-hidden"
-              style={{
-                // Capped by viewport width (vw) AND viewport height (svh,
-                // converted to an equivalent width via the stage's aspect
-                // ratio) — whichever is smaller wins, so the cake stays
-                // large on tall phones but shrinks automatically on short
-                // ones instead of pushing the headline/CTAs off-screen.
-                width: `min(84vw, 460px, calc(33svh * ${STAGE_ASPECT}))`,
-                aspectRatio: STAGE_ASPECT,
-              }}
+          <h1 className="mt-6 font-fc-serif text-[clamp(2.8rem,7.5vw,5.6rem)] font-medium leading-[0.98] tracking-tight text-fc-cocoa">
+            <motion.span
+              initial="hidden"
+              animate="show"
+              variants={staggerChildren(0.12, LOADER_TOTAL_S + 0.15)}
+              className="block"
             >
-              <div
-                className="absolute inset-x-0"
-                style={{ top: `${CAKE_BOX_TOP_PERCENT}%`, height: `${CAKE_BOX_HEIGHT_PERCENT}%` }}
-              >
-                <HeroCake scrollYProgress={scrollYProgress} reduceMotion={reduceMotion} />
+              {HEADLINE.split(' ').map((word, i) => (
+                <span key={word} className="mr-4 inline-block overflow-hidden pb-2 align-bottom last:mr-0">
+                  <motion.span
+                    variants={wordReveal}
+                    className={`inline-block ${i === 1 ? 'italic text-fc-gold' : ''}`}
+                  >
+                    {word}
+                  </motion.span>
+                </span>
+              ))}
+            </motion.span>
+          </h1>
 
-                {/* Nudged to stay within the stage's clipped bounds (no
-                    negative left/right) instead of overhanging the cake's
-                    edge, now that the stage clips overflow. */}
-                <FloatingIcon className="left-[1%] top-[8%] h-10 w-10 text-fc-blush/70" duration={7}>
-                  <StrawberryMark className="h-full w-full" />
-                </FloatingIcon>
-                <FloatingIcon className="bottom-[10%] right-[1%] h-9 w-9 text-fc-sage/70" duration={8.5} delay={1}>
-                  <PistachioMark className="h-full w-full" />
-                </FloatingIcon>
-                <FloatingIcon className="right-[6%] top-[-4%] h-7 w-7 text-fc-gold/70" duration={6.5} delay={0.5}>
-                  <FlowerMark className="h-full w-full" />
-                </FloatingIcon>
-              </div>
-            </div>
-          </div>
-        </motion.div>
+          <motion.p
+            initial={{ opacity: 0, y: 18 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: easeLuxe, delay: LOADER_TOTAL_S + 0.55 }}
+            className="mt-7 max-w-md text-[15px] leading-relaxed text-fc-cocoa-light"
+          >
+            Beautiful cakes, made with love for your sweetest moments — handcrafted in small batches
+            in AlJubiha, Amman.
+          </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0, y: 18 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: easeLuxe, delay: LOADER_TOTAL_S + 0.75 }}
+            className="mt-10 flex flex-wrap items-center gap-4"
+          >
+            <Button size="lg" onClick={() => scrollToId('cakes')}>
+              Explore Cakes
+            </Button>
+            <Button size="lg" variant="outline" onClick={() => scrollToId('custom')}>
+              Order Now
+            </Button>
+          </motion.div>
+        </div>
 
         <motion.div
-          style={{ opacity: reduceMotion ? 1 : scrollHintOpacity }}
-          className="absolute bottom-8 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-2 text-fc-cocoa-light/60 lg:flex"
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.9, ease: easeLuxe, delay: LOADER_TOTAL_S + 0.2 }}
+          className="order-1 flex justify-center lg:order-2 lg:justify-end"
         >
-          <motion.span
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: LOADER_TOTAL_S + 1.1 }}
-            className="text-[10px] uppercase tracking-[0.3em]"
-          >
-            Scroll
-          </motion.span>
-          <span className="h-8 w-px animate-pulse bg-current" />
+          <div className="relative w-[min(84vw,460px)]">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/images/cakes/hero-cake-assembled.webp"
+              alt="Frankies signature naked chocolate cake, topped with fresh strawberries, blackberries and raspberries"
+              className="h-auto w-full"
+            />
+
+            <FloatingIcon className="left-[-4%] top-[6%] h-10 w-10 text-fc-blush/70" duration={7}>
+              <StrawberryMark className="h-full w-full" />
+            </FloatingIcon>
+            <FloatingIcon className="bottom-[8%] right-[-3%] h-9 w-9 text-fc-sage/70" duration={8.5} delay={1}>
+              <PistachioMark className="h-full w-full" />
+            </FloatingIcon>
+            <FloatingIcon className="right-[4%] top-[-3%] h-7 w-7 text-fc-gold/70" duration={6.5} delay={0.5}>
+              <FlowerMark className="h-full w-full" />
+            </FloatingIcon>
+          </div>
         </motion.div>
-      </motion.div>
+      </div>
     </section>
   );
 }
