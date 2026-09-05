@@ -1,4 +1,13 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <rect width="32" height="32" rx="8" fill="#3A2A20"/>
-  <text x="16" y="22" font-family="Georgia, 'Times New Roman', serif" font-style="italic" font-size="17" fill="#FBF4EA" text-anchor="middle">F</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <defs>
+    <clipPath id="fc-right-half">
+      <rect x="100" y="0" width="100" height="200"/>
+    </clipPath>
+  </defs>
+  <circle cx="100" cy="100" r="100" fill="#FFFFFF"/>
+  <path d="M50,112 L60,68 L85,94 L100,34 L115,94 L140,68 L150,112 Z" fill="#6FAF9C"/>
+  <path d="M50,112 L60,68 L85,94 L100,34 L115,94 L140,68 L150,112 Z" fill="#8FCBBB" clip-path="url(#fc-right-half)"/>
+  <path d="M91,112 L100,40 L109,112 Z" fill="#CDEBE2"/>
+  <path d="M100,106 Q120,132 146,150 Q120,168 100,194 Q80,168 54,150 Q80,132 100,106 Z" fill="#F0966F"/>
+  <path d="M100,106 Q120,132 146,150 Q120,168 100,194 Q80,168 54,150 Q80,132 100,106 Z" fill="#EC8465" clip-path="url(#fc-right-half)"/>
 </svg>

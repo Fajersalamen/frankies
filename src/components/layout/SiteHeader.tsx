@@ -7,6 +7,7 @@ import { navLinks } from '@/data/content';
 import { useCart } from '../cart/CartProvider';
 import { useSiteUI } from '../ui/SiteUIProvider';
 import { Button } from '../ui/Button';
+import { BrandMark } from '../ui/BrandMark';
 import { easeLuxe } from '@/lib/motion';
 
 function scrollToId(id: string) {
@@ -35,11 +36,9 @@ export function SiteHeader() {
           scrolled ? 'h-[68px]' : 'h-[84px]'
         }`}
       >
-        <button
-          onClick={() => scrollToId('home')}
-          className="font-fc-serif text-2xl italic tracking-tight text-fc-cocoa"
-        >
-          Frankies
+        <button onClick={() => scrollToId('home')} className="flex items-center gap-2.5">
+          <BrandMark className="h-8 w-8" background="transparent" />
+          <span className="font-fc-serif text-2xl italic tracking-tight text-fc-cocoa">Frankies</span>
         </button>
 
         <nav className="hidden items-center gap-9 lg:flex">
