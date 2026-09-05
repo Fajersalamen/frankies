@@ -10,9 +10,11 @@
     "command": "npm run build"
   },
   // The site is a static export (no server, no API routes, no database) —
-  // Workers serves it directly from the built `out/` directory.
+  // Workers serves it directly from the built `out/` directory. No `main`
+  // script and no `binding` here: this is an assets-only Worker, and
+  // wrangler rejects a binding on assets unless there's a script to read
+  // it from `env`.
   "assets": {
-    "directory": "./out",
-    "binding": "ASSETS"
+    "directory": "./out"
   }
 }
