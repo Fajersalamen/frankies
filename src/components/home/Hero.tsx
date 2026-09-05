@@ -24,12 +24,14 @@ export function Hero() {
     offset: ['start start', 'end end'],
   });
 
-  // The scroll "story": as the visitor scrolls through the pinned hero, the
-  // cake slowly turns and grows, the headline drifts at a different rate
-  // (parallax), the backdrop deepens in tone, and everything settles/fades
-  // just before the section releases into the next one.
-  const cakeRotate = useTransform(scrollYProgress, [0, 1], [0, 16]);
-  const cakeScale = useTransform(scrollYProgress, [0, 1], [1, 1.12]);
+  // The scroll "story": nothing moves until the visitor starts scrolling.
+  // Then the cake drops in from above, splits open down the middle once
+  // it settles, and the headline drifts at a different rate (parallax) —
+  // everything settles/fades just before the section releases into the
+  // next one.
+  const cakeDropY = useTransform(scrollYProgress, [0, 0.35], [-900, 0]);
+  const splitLeftX = useTransform(scrollYProgress, [0.4, 0.75], [0, -54]);
+  const splitRightX = useTransform(scrollYProgress, [0.4, 0.75], [0, 54]);
   const textY = useTransform(scrollYProgress, [0, 1], [0, -70]);
   const contentOpacity = useTransform(scrollYProgress, [0, 0.82, 1], [1, 1, 0]);
   const bgColor = useTransform(scrollYProgress, [0, 1], ['#FBF4EA', '#E9D6B4']);
@@ -110,31 +112,49 @@ export function Hero() {
           </motion.div>
 
           <div className="order-1 flex justify-center lg:order-2 lg:justify-end">
-            <motion.div
-              initial={{ opacity: 0, scale: 1.05 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 1.1, ease: easeLuxe, delay: LOADER_TOTAL_S }}
-              className="relative aspect-square w-[min(78vw,440px)]"
-            >
-              <div className="absolute inset-6 rounded-full bg-[radial-gradient(circle,#f6ead4_0%,transparent_70%)] blur-2xl" />
-
+            <div className="relative aspect-square w-[min(78vw,440px)]">
               <motion.div
-                style={{ rotate: reduceMotion ? 0 : cakeRotate, scale: reduceMotion ? 1 : cakeScale }}
+                style={{ y: reduceMotion ? 0 : cakeDropY }}
                 className="absolute inset-0"
               >
-                <div
-                  className="fc-float h-full w-full"
-                  style={{ '--fc-tilt': '-2deg' } as React.CSSProperties}
+                {/* Left half of the cake — same photo, clipped down the
+                    middle, radially faded at the outer edge so it reads as
+                    "just the cake" rather than a framed photo. */}
+                <motion.div
+                  style={{
+                    x: reduceMotion ? 0 : splitLeftX,
+                    clipPath: 'inset(0 50% 0 0)',
+                    WebkitClipPath: 'inset(0 50% 0 0)',
+                    maskImage: 'radial-gradient(circle, black 58%, transparent 78%)',
+                    WebkitMaskImage: 'radial-gradient(circle, black 58%, transparent 78%)',
+                  }}
+                  className="absolute inset-0"
                 >
-                  <div className="relative h-full w-full overflow-hidden rounded-[40%_60%_55%_45%/50%_45%_55%_50%] shadow-[0_50px_90px_-30px_rgba(58,42,32,0.45)]">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src="/images/cakes/pistachio-royale.webp"
-                      alt="Pistachio Royale — mirror-glazed signature cake"
-                      className="h-full w-full object-cover"
-                    />
-                  </div>
-                </div>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src="/images/cakes/pistachio-royale.webp"
+                    alt="Pistachio Royale — mirror-glazed signature cake"
+                    className="h-full w-full object-cover"
+                  />
+                </motion.div>
+                <motion.div
+                  style={{
+                    x: reduceMotion ? 0 : splitRightX,
+                    clipPath: 'inset(0 0 0 50%)',
+                    WebkitClipPath: 'inset(0 0 0 50%)',
+                    maskImage: 'radial-gradient(circle, black 58%, transparent 78%)',
+                    WebkitMaskImage: 'radial-gradient(circle, black 58%, transparent 78%)',
+                  }}
+                  className="absolute inset-0"
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src="/images/cakes/pistachio-royale.webp"
+                    alt=""
+                    aria-hidden
+                    className="h-full w-full object-cover"
+                  />
+                </motion.div>
               </motion.div>
 
               <FloatingIcon className="left-[-8%] top-[8%] h-10 w-10 text-fc-blush/70" duration={7}>
@@ -146,7 +166,7 @@ export function Hero() {
               <FloatingIcon className="right-[6%] top-[-4%] h-7 w-7 text-fc-gold/70" duration={6.5} delay={0.5}>
                 <FlowerMark className="h-full w-full" />
               </FloatingIcon>
-            </motion.div>
+            </div>
           </div>
         </motion.div>
 
