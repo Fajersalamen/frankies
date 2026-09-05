@@ -56,7 +56,7 @@ export const HERO_CAKE_ASPECT = 658 / 736;
  *  Lower layers repeat this same window, shifted later by LAYER_STAGGER
  *  per layer, producing a top-to-bottom cascade instead of every layer
  *  moving in lockstep. */
-export const EXPLODE_WINDOW: [number, number] = [0.03, 0.28];
+export const EXPLODE_WINDOW: [number, number] = [0.08, 0.32];
 /** Scroll window where the topmost layer starts/finishes reassembling. */
 export const REASSEMBLE_WINDOW: [number, number] = [0.58, 0.82];
 /** Extra scroll-progress delay added per layer index (0 = fruit topper). */

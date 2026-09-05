@@ -46,14 +46,14 @@ export function Hero() {
     >
       <motion.div
         style={{ backgroundColor: reduceMotion ? '#FBF4EA' : bgColor }}
-        className="sticky top-0 flex h-[100svh] items-center overflow-hidden pt-[var(--fc-header-h)]"
+        className="sticky top-0 flex h-[100svh] items-start overflow-hidden pt-[var(--fc-header-h)] lg:items-center"
       >
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_78%_30%,#f1e6d3_0%,transparent_55%),radial-gradient(circle_at_10%_85%,#efe0cc_0%,transparent_50%)]" />
         <div className="fc-grain pointer-events-none absolute inset-0" />
 
         <motion.div
           style={{ opacity: reduceMotion ? 1 : contentOpacity }}
-          className="relative mx-auto grid w-full max-w-7xl grid-cols-1 items-center gap-16 px-5 py-16 sm:px-8 lg:grid-cols-[1.05fr_0.95fr] lg:gap-8 lg:py-0"
+          className="relative mx-auto grid w-full max-w-7xl grid-cols-1 items-center gap-4 px-5 py-2 sm:px-8 lg:grid-cols-[1.05fr_0.95fr] lg:gap-8 lg:py-0"
         >
           <motion.div style={{ y: reduceMotion ? 0 : textY }} className="order-2 lg:order-1">
             <motion.div
@@ -66,7 +66,7 @@ export function Hero() {
               Amman&apos;s Handcrafted Cake Studio
             </motion.div>
 
-            <h1 className="mt-6 font-fc-serif text-[clamp(2.8rem,7.5vw,5.6rem)] font-medium leading-[0.98] tracking-tight text-fc-cocoa">
+            <h1 className="mt-4 font-fc-serif text-[clamp(2.8rem,7.5vw,5.6rem)] font-medium leading-[0.98] tracking-tight text-fc-cocoa lg:mt-6">
               <motion.span
                 initial="hidden"
                 animate="show"
@@ -90,7 +90,7 @@ export function Hero() {
               initial={{ opacity: 0, y: 18 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, ease: easeLuxe, delay: LOADER_TOTAL_S + 0.55 }}
-              className="mt-7 max-w-md text-[15px] leading-relaxed text-fc-cocoa-light"
+              className="mt-4 max-w-md text-[15px] leading-relaxed text-fc-cocoa-light lg:mt-7"
             >
               Beautiful cakes, made with love for your sweetest moments — handcrafted in small batches
               in AlJubiha, Amman.
@@ -100,7 +100,7 @@ export function Hero() {
               initial={{ opacity: 0, y: 18 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, ease: easeLuxe, delay: LOADER_TOTAL_S + 0.75 }}
-              className="mt-10 flex flex-wrap items-center gap-4"
+              className="mt-6 flex flex-wrap items-center gap-4 lg:mt-10"
             >
               <Button size="lg" onClick={() => scrollToId('cakes')}>
                 Explore Cakes
@@ -112,7 +112,18 @@ export function Hero() {
           </motion.div>
 
           <div className="order-1 flex justify-center lg:order-2 lg:justify-end">
-            <div className="relative w-[min(92vw,560px)]" style={{ aspectRatio: HERO_CAKE_ASPECT }}>
+            <div
+              className="relative"
+              style={{
+                // Capped by viewport width (vw) AND viewport height (svh,
+                // converted to an equivalent width via the aspect ratio) —
+                // whichever is smaller wins, so the cake stays large on tall
+                // phones but shrinks automatically on short ones instead of
+                // pushing the headline/CTAs out of the pinned viewport.
+                width: `min(84vw, 460px, calc(33svh * ${HERO_CAKE_ASPECT}))`,
+                aspectRatio: HERO_CAKE_ASPECT,
+              }}
+            >
               <div className="absolute inset-0">
                 <HeroCake scrollYProgress={scrollYProgress} reduceMotion={reduceMotion} />
               </div>
