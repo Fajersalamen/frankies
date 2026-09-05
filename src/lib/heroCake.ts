@@ -47,17 +47,16 @@ export const HERO_CAKE_ASPECT = 658 / 736;
 // raw pixel guess — so the whole thing scales cleanly from phone to
 // desktop. Tweak these to change pacing/spacing without touching the
 // component's rendering logic.
-
-/** Scroll window for the initial "cake drops in from above" entrance. */
-export const ENTRANCE_WINDOW: [number, number] = [0, 0.1];
-/** How far above its resting position the cake starts, in px. */
-export const ENTRANCE_DROP_PX = 260;
+//
+// There is no entrance animation: the cake is fully assembled and
+// static the moment the page loads. It only starts moving once the
+// visitor scrolls past EXPLODE_WINDOW[0].
 
 /** Scroll window where the topmost layer starts/finishes exploding apart.
  *  Lower layers repeat this same window, shifted later by LAYER_STAGGER
  *  per layer, producing a top-to-bottom cascade instead of every layer
  *  moving in lockstep. */
-export const EXPLODE_WINDOW: [number, number] = [0.12, 0.34];
+export const EXPLODE_WINDOW: [number, number] = [0.03, 0.28];
 /** Scroll window where the topmost layer starts/finishes reassembling. */
 export const REASSEMBLE_WINDOW: [number, number] = [0.58, 0.82];
 /** Extra scroll-progress delay added per layer index (0 = fruit topper). */

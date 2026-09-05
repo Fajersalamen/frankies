@@ -5,7 +5,7 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import { LOADER_TOTAL_S } from '@/lib/timing';
 import { easeLuxe, staggerChildren, wordReveal } from '@/lib/motion';
 import { usePrefersReducedMotion } from '@/lib/usePrefersReducedMotion';
-import { CONTENT_FADE_START, ENTRANCE_DROP_PX, ENTRANCE_WINDOW, HERO_CAKE_ASPECT } from '@/lib/heroCake';
+import { CONTENT_FADE_START, HERO_CAKE_ASPECT } from '@/lib/heroCake';
 import { HeroCake } from './HeroCake';
 import { FloatingIcon } from '../ui/FloatingIcon';
 import { Button } from '../ui/Button';
@@ -26,12 +26,12 @@ export function Hero() {
     offset: ['start start', 'end end'],
   });
 
-  // The scroll "story": nothing moves until the visitor starts scrolling.
-  // The cake drops in from above fully assembled, then explodes apart
-  // layer by layer (per-layer motion lives in <HeroCake>), holds apart,
-  // and reassembles before the section fades into the next one. The
-  // headline drifts at a different rate (parallax) throughout.
-  const cakeGroupY = useTransform(scrollYProgress, ENTRANCE_WINDOW, [-ENTRANCE_DROP_PX, 0]);
+  // The scroll "story": the cake is fully assembled and static the
+  // instant the page loads — nothing moves until the visitor scrolls.
+  // Scrolling then explodes it apart layer by layer (per-layer motion
+  // lives in <HeroCake>), holds it apart, and reassembles it before the
+  // section fades into the next one. The headline drifts at a different
+  // rate (parallax) throughout.
   const textY = useTransform(scrollYProgress, [0, 1], [0, -70]);
   const contentOpacity = useTransform(scrollYProgress, [0, CONTENT_FADE_START, 1], [1, 1, 0]);
   const bgColor = useTransform(scrollYProgress, [0, 1], ['#FBF4EA', '#E9D6B4']);
@@ -112,10 +112,10 @@ export function Hero() {
           </motion.div>
 
           <div className="order-1 flex justify-center lg:order-2 lg:justify-end">
-            <div className="relative w-[min(84vw,460px)]" style={{ aspectRatio: HERO_CAKE_ASPECT }}>
-              <motion.div style={{ y: reduceMotion ? 0 : cakeGroupY }} className="absolute inset-0">
+            <div className="relative w-[min(92vw,560px)]" style={{ aspectRatio: HERO_CAKE_ASPECT }}>
+              <div className="absolute inset-0">
                 <HeroCake scrollYProgress={scrollYProgress} reduceMotion={reduceMotion} />
-              </motion.div>
+              </div>
 
               <FloatingIcon className="left-[-8%] top-[8%] h-10 w-10 text-fc-blush/70" duration={7}>
                 <StrawberryMark className="h-full w-full" />
