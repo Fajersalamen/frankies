@@ -5,6 +5,8 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import { LOADER_TOTAL_S } from '@/lib/timing';
 import { easeLuxe, staggerChildren, wordReveal } from '@/lib/motion';
 import { usePrefersReducedMotion } from '@/lib/usePrefersReducedMotion';
+import { CONTENT_FADE_START, ENTRANCE_DROP_PX, ENTRANCE_WINDOW, HERO_CAKE_ASPECT } from '@/lib/heroCake';
+import { HeroCake } from './HeroCake';
 import { FloatingIcon } from '../ui/FloatingIcon';
 import { Button } from '../ui/Button';
 import { FlowerMark, PistachioMark, StrawberryMark } from '../ui/ingredient-icons';
@@ -25,15 +27,13 @@ export function Hero() {
   });
 
   // The scroll "story": nothing moves until the visitor starts scrolling.
-  // Then the cake drops in from above, splits open down the middle once
-  // it settles, and the headline drifts at a different rate (parallax) —
-  // everything settles/fades just before the section releases into the
-  // next one.
-  const cakeDropY = useTransform(scrollYProgress, [0, 0.35], [-900, 0]);
-  const splitLeftX = useTransform(scrollYProgress, [0.4, 0.75], [0, -54]);
-  const splitRightX = useTransform(scrollYProgress, [0.4, 0.75], [0, 54]);
+  // The cake drops in from above fully assembled, then explodes apart
+  // layer by layer (per-layer motion lives in <HeroCake>), holds apart,
+  // and reassembles before the section fades into the next one. The
+  // headline drifts at a different rate (parallax) throughout.
+  const cakeGroupY = useTransform(scrollYProgress, ENTRANCE_WINDOW, [-ENTRANCE_DROP_PX, 0]);
   const textY = useTransform(scrollYProgress, [0, 1], [0, -70]);
-  const contentOpacity = useTransform(scrollYProgress, [0, 0.82, 1], [1, 1, 0]);
+  const contentOpacity = useTransform(scrollYProgress, [0, CONTENT_FADE_START, 1], [1, 1, 0]);
   const bgColor = useTransform(scrollYProgress, [0, 1], ['#FBF4EA', '#E9D6B4']);
   const scrollHintOpacity = useTransform(scrollYProgress, [0, 0.15], [1, 0]);
 
@@ -112,49 +112,9 @@ export function Hero() {
           </motion.div>
 
           <div className="order-1 flex justify-center lg:order-2 lg:justify-end">
-            <div className="relative aspect-square w-[min(78vw,440px)]">
-              <motion.div
-                style={{ y: reduceMotion ? 0 : cakeDropY }}
-                className="absolute inset-0"
-              >
-                {/* Left half of the cake — same photo, clipped down the
-                    middle, radially faded at the outer edge so it reads as
-                    "just the cake" rather than a framed photo. */}
-                <motion.div
-                  style={{
-                    x: reduceMotion ? 0 : splitLeftX,
-                    clipPath: 'inset(0 50% 0 0)',
-                    WebkitClipPath: 'inset(0 50% 0 0)',
-                    maskImage: 'radial-gradient(circle, black 58%, transparent 78%)',
-                    WebkitMaskImage: 'radial-gradient(circle, black 58%, transparent 78%)',
-                  }}
-                  className="absolute inset-0"
-                >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src="/images/cakes/pistachio-royale.webp"
-                    alt="Pistachio Royale — mirror-glazed signature cake"
-                    className="h-full w-full object-cover"
-                  />
-                </motion.div>
-                <motion.div
-                  style={{
-                    x: reduceMotion ? 0 : splitRightX,
-                    clipPath: 'inset(0 0 0 50%)',
-                    WebkitClipPath: 'inset(0 0 0 50%)',
-                    maskImage: 'radial-gradient(circle, black 58%, transparent 78%)',
-                    WebkitMaskImage: 'radial-gradient(circle, black 58%, transparent 78%)',
-                  }}
-                  className="absolute inset-0"
-                >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src="/images/cakes/pistachio-royale.webp"
-                    alt=""
-                    aria-hidden
-                    className="h-full w-full object-cover"
-                  />
-                </motion.div>
+            <div className="relative w-[min(84vw,460px)]" style={{ aspectRatio: HERO_CAKE_ASPECT }}>
+              <motion.div style={{ y: reduceMotion ? 0 : cakeGroupY }} className="absolute inset-0">
+                <HeroCake scrollYProgress={scrollYProgress} reduceMotion={reduceMotion} />
               </motion.div>
 
               <FloatingIcon className="left-[-8%] top-[8%] h-10 w-10 text-fc-blush/70" duration={7}>
