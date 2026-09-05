@@ -65,8 +65,10 @@ export const LAYER_STAGGER = 0.02;
 /** How far a layer travels at full explosion, as a % of its own height,
  *  multiplied by its distance from the vertical center of the stack —
  *  so outer layers (fruit topper, bottom disc) travel further than the
- *  inner ones, which reads as a natural outward burst. */
-export const EXPLODE_STEP_PERCENT = 60;
+ *  inner ones, which reads as a natural outward burst. Kept modest so the
+ *  exploded layers never have to travel further than the reserved "stage"
+ *  margins below can contain (see STAGE_ASPECT). */
+export const EXPLODE_STEP_PERCENT = 32;
 
 /** Each layer's crop line sits at a scanline that isn't 100% empty in the
  *  source photo, which leaves a hairline gap when every layer sits at
@@ -79,3 +81,33 @@ export const REST_SEAM_CLOSE_PERCENT = 5;
  *  finishing at progress 1. Kept after the last layer's reassembly
  *  finishes so the cake is always shown fully formed before it fades. */
 export const CONTENT_FADE_START = 0.9;
+
+// ---------------------------------------------------------------------
+// The "stage": exploded layers travel outside the assembled cake's own
+// box, so the cake is rendered inside a taller, invisible, clipped
+// "stage" box that reserves exactly enough room above/below to contain
+// the topmost/bottommost layer at full explosion — never more, never
+// less — so the cake can never visually overlap the headline text below
+// it, however EXPLODE_STEP_PERCENT or the layer heights are tuned.
+
+const CENTER_INDEX = (HERO_CAKE_LAYERS.length - 1) / 2;
+function travelFraction(index: number) {
+  return (Math.abs(index - CENTER_INDEX) * EXPLODE_STEP_PERCENT) / 100;
+}
+
+const firstLayer = HERO_CAKE_LAYERS[0]!;
+const lastLayer = HERO_CAKE_LAYERS[HERO_CAKE_LAYERS.length - 1]!;
+
+/** Extra room reserved above/below the cake, as a fraction of the cake's
+ *  own (assembled) height. */
+export const STAGE_TOP_MARGIN = travelFraction(0) * (firstLayer.heightPercent / 100);
+export const STAGE_BOTTOM_MARGIN = travelFraction(HERO_CAKE_LAYERS.length - 1) * (lastLayer.heightPercent / 100);
+
+const stageGrowth = 1 + STAGE_TOP_MARGIN + STAGE_BOTTOM_MARGIN;
+
+/** width / height of the full stage (cake + reserved explosion room). */
+export const STAGE_ASPECT = HERO_CAKE_ASPECT / stageGrowth;
+/** Where the assembled-cake box sits inside the stage, as a % from the top. */
+export const CAKE_BOX_TOP_PERCENT = (STAGE_TOP_MARGIN / stageGrowth) * 100;
+/** The assembled-cake box's height, as a % of the stage's height. */
+export const CAKE_BOX_HEIGHT_PERCENT = (1 / stageGrowth) * 100;

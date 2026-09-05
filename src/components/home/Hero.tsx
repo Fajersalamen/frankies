@@ -5,7 +5,7 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import { LOADER_TOTAL_S } from '@/lib/timing';
 import { easeLuxe, staggerChildren, wordReveal } from '@/lib/motion';
 import { usePrefersReducedMotion } from '@/lib/usePrefersReducedMotion';
-import { CONTENT_FADE_START, HERO_CAKE_ASPECT } from '@/lib/heroCake';
+import { CAKE_BOX_HEIGHT_PERCENT, CAKE_BOX_TOP_PERCENT, CONTENT_FADE_START, STAGE_ASPECT } from '@/lib/heroCake';
 import { HeroCake } from './HeroCake';
 import { FloatingIcon } from '../ui/FloatingIcon';
 import { Button } from '../ui/Button';
@@ -32,7 +32,7 @@ export function Hero() {
   // lives in <HeroCake>), holds it apart, and reassembles it before the
   // section fades into the next one. The headline drifts at a different
   // rate (parallax) throughout.
-  const textY = useTransform(scrollYProgress, [0, 1], [0, -70]);
+  const textY = useTransform(scrollYProgress, [0, 1], [0, -20]);
   const contentOpacity = useTransform(scrollYProgress, [0, CONTENT_FADE_START, 1], [1, 1, 0]);
   const bgColor = useTransform(scrollYProgress, [0, 1], ['#FBF4EA', '#E9D6B4']);
   const scrollHintOpacity = useTransform(scrollYProgress, [0, 0.15], [1, 0]);
@@ -112,31 +112,42 @@ export function Hero() {
           </motion.div>
 
           <div className="order-1 flex justify-center lg:order-2 lg:justify-end">
+            {/* The "stage" reserves exactly enough room above/below the
+                assembled cake to contain the layers at full explosion
+                (see STAGE_ASPECT), and clips anything beyond that — so
+                the exploded cake can never overlap the headline below
+                it, however the explosion is tuned. */}
             <div
-              className="relative"
+              className="relative overflow-hidden"
               style={{
                 // Capped by viewport width (vw) AND viewport height (svh,
-                // converted to an equivalent width via the aspect ratio) —
-                // whichever is smaller wins, so the cake stays large on tall
-                // phones but shrinks automatically on short ones instead of
-                // pushing the headline/CTAs out of the pinned viewport.
-                width: `min(84vw, 460px, calc(33svh * ${HERO_CAKE_ASPECT}))`,
-                aspectRatio: HERO_CAKE_ASPECT,
+                // converted to an equivalent width via the stage's aspect
+                // ratio) — whichever is smaller wins, so the cake stays
+                // large on tall phones but shrinks automatically on short
+                // ones instead of pushing the headline/CTAs off-screen.
+                width: `min(84vw, 460px, calc(33svh * ${STAGE_ASPECT}))`,
+                aspectRatio: STAGE_ASPECT,
               }}
             >
-              <div className="absolute inset-0">
+              <div
+                className="absolute inset-x-0"
+                style={{ top: `${CAKE_BOX_TOP_PERCENT}%`, height: `${CAKE_BOX_HEIGHT_PERCENT}%` }}
+              >
                 <HeroCake scrollYProgress={scrollYProgress} reduceMotion={reduceMotion} />
-              </div>
 
-              <FloatingIcon className="left-[-8%] top-[8%] h-10 w-10 text-fc-blush/70" duration={7}>
-                <StrawberryMark className="h-full w-full" />
-              </FloatingIcon>
-              <FloatingIcon className="bottom-[10%] right-[-6%] h-9 w-9 text-fc-sage/70" duration={8.5} delay={1}>
-                <PistachioMark className="h-full w-full" />
-              </FloatingIcon>
-              <FloatingIcon className="right-[6%] top-[-4%] h-7 w-7 text-fc-gold/70" duration={6.5} delay={0.5}>
-                <FlowerMark className="h-full w-full" />
-              </FloatingIcon>
+                {/* Nudged to stay within the stage's clipped bounds (no
+                    negative left/right) instead of overhanging the cake's
+                    edge, now that the stage clips overflow. */}
+                <FloatingIcon className="left-[1%] top-[8%] h-10 w-10 text-fc-blush/70" duration={7}>
+                  <StrawberryMark className="h-full w-full" />
+                </FloatingIcon>
+                <FloatingIcon className="bottom-[10%] right-[1%] h-9 w-9 text-fc-sage/70" duration={8.5} delay={1}>
+                  <PistachioMark className="h-full w-full" />
+                </FloatingIcon>
+                <FloatingIcon className="right-[6%] top-[-4%] h-7 w-7 text-fc-gold/70" duration={6.5} delay={0.5}>
+                  <FlowerMark className="h-full w-full" />
+                </FloatingIcon>
+              </div>
             </div>
           </div>
         </motion.div>
